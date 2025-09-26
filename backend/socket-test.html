@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Socket.IO Test</title></head>
+<body>
+  <h3>Socket.IO Test</h3>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    // Update host/port to match your gateway
+    const socket = io("http://localhost:3002", { transports: ["websocket"] });
+
+    socket.on("connect", () => {
+      console.log("Connected, id:", socket.id);
+      // show connection in page
+      document.body.insertAdjacentHTML('beforeend', `<p>connected: ${socket.id}</p>`);
+    });
+
+    // Listen for broadcasted messages
+    socket.on("reply", (msg) => {
+      console.log("reply event received:", msg);
+      document.body.insertAdjacentHTML('beforeend', `<pre>reply: ${JSON.stringify(msg)}</pre>`);
+    });
+
+    socket.on("newMessage", (msg) => {
+      console.log("newMessage event received:", msg);
+      document.body.insertAdjacentHTML('beforeend', `<pre>newMessage: ${JSON.stringify(msg)}</pre>`);
+    });
+
+    // send a test message after 1s
+    setTimeout(() => {
+      const payload = { sender: "Ali", content: "Hello from browser tab" };
+      console.log("emitting newMessage", payload);
+      socket.emit("newMessage", payload); // event name must match @SubscribeMessage
+    }, 1000);
+  </script>
+</body>
+</html>
