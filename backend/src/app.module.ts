@@ -11,7 +11,6 @@
 // })
 // export class AppModule {}
 
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatModule } from './chat/chat.module';
@@ -24,6 +23,9 @@ import { Message } from './chat/chat.entity';
       database: 'chat.db',
       entities: [Message],
       synchronize: true, // auto-create tables (only for dev)
+      extra: {
+        timeout: 5000, // wait up to 5s if DB is locked
+      },
     }),
     ChatModule,
   ],
